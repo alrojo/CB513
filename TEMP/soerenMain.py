@@ -89,8 +89,8 @@ def main():
     out_train = lasagne.layers.get_output(
         l_out, sym_x, mask=sym_mask, deterministic=False)
 
-    out_eval = lasagne.layers.get_output(
-        l_out, sym_x, mask=sym_mask, deterministic=True)
+#    out_eval = lasagne.layers.get_output(
+#        l_out, sym_x, mask=sym_mask, deterministic=True)
 
     probs_flat = out_train.reshape((-1, num_classes))
 
@@ -116,7 +116,7 @@ def main():
         [sym_x, sym_y, sym_mask], [cost, out_train, norm_calc], updates=updates)
 
     # use this for eval (deterministic = True + no updates)
-    eval = theano.function([sym_x, sym_mask], out_eval)
+#    eval = theano.function([sym_x, sym_mask], out_eval)
 
 
 

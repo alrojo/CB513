@@ -16,9 +16,10 @@ print "Loading metadata file %s" % metadata_path
 metadata = np.load(metadata_path)
 acc_eval_valid = metadata['accuracy_eval_valid']
 acc_train = metadata['accuracy_train']
+acc_eval_test = metadata['accuracy_eval_test']
 
 print "Valid acc"
 i = 1
-for valid, train, test in zip(acc_eval_valid, acc_train):
-    print "%d: %.5f %.5f" %(i,train, valid)
+for valid, train, test in zip(acc_eval_valid, acc_train, acc_eval_test):
+    print "%d: %.5f %.5f %.5f" %(i,train, valid, test)
     i = i+1

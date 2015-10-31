@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "train.py", line 11, in <module>
-    import theano
-ImportError: No module named theano

@@ -7,6 +7,12 @@ save_every = 5
 
 epochs = 300
 batch_size = 64
+N_CONV_A = 16
+N_CONV_B = 16
+N_CONV_C = 16
+F_CONV_A = 3
+F_CONV_B = 5
+F_CONV_C = 7
 N_L1 = 200
 N_LSTM_F = 200
 N_LSTM_B = 200
@@ -15,11 +21,11 @@ n_inputs = 42
 num_classes = 8
 seq_len = 700
 optimizer = "adagrad"
-lambda_reg = 0.0
+lambda_reg = 0.0001
 cut_grad = 20
 
 learning_rate_schedule = {
-    0: 0.01,
+    0: 0.02,
     250: 0.005,
     275: 0.0025,
 }
@@ -27,19 +33,35 @@ learning_rate_schedule = {
 def build_model():
     # 1. Input layer
     l_in = lasagne.layers.InputLayer(shape=(None, seq_len, n_inputs))
+    l_dim_a = lasagne.layers.DimshuffleLayer(
+	l_in, (0,2,1))
+    l_conv_a = lasagne.layers.Conv1DLayer(
+	incoming=l_dim_a, num_filters=N_CONV_A, pad='same',
+	filter_size=F_CONV_A, stride=1, nonlinearity=lasagne.nonlinearities.rectify)
+    l_conv_b = lasagne.layers.Conv1DLayer(
+	incoming=l_dim_a, num_filters=N_CONV_B, pad='same',
+	filter_size=F_CONV_B, stride=1, nonlinearity=lasagne.nonlinearities.rectify)
+    l_conv_c = lasagne.layers.Conv1DLayer(
+	incoming=l_dim_a, num_filters=N_CONV_C, pad='same',
+	filter_size=F_CONV_C, stride=1, nonlinearity=lasagne.nonlinearities.rectify)
+    l_c_a = lasagne.layers.ConcatLayer([l_conv_a, l_conv_b, l_conv_c], axis=1)
+    l_dim_b = lasagne.layers.DimshuffleLayer(
+	l_c_a, (0,2,1))
+#    l_c_b = lasagne.layers.ConcatLayer([l_in,l_dim_b], axis=2)
     # 2. First Dense Layer    
     l_reshape_a = lasagne.layers.ReshapeLayer(
-        l_in, (batch_size*seq_len, n_inputs))
+        l_in, (batch_size*seq_len,n_inputs))
     l_1 = lasagne.layers.DenseLayer(
         l_reshape_a, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
     l_reshape_b = lasagne.layers.ReshapeLayer(
         l_1, (batch_size, seq_len, N_L1))
 #    batch_size, seq_len, _ = l_in.input_var.shape
     # 3. LSTM Layers
-    l_forward = lasagne.layers.LSTMLayer(l_reshape_b, N_LSTM_F)
+    l_c_b = lasagne.layers.ConcatLayer([l_reshape_b, l_dim_b], axis=2)
+    l_forward = lasagne.layers.LSTMLayer(l_c_b, N_LSTM_F)
 #    l_vertical = lasagne.layers.ConcatLayer([l_in,l_forward], axis=2)
 #    l_sum = lasagne.layers.ConcatLayer([l_in, l_forward],axis=-1)
-    l_backward = lasagne.layers.LSTMLayer(l_reshape_b, N_LSTM_B, backwards=True)
+    l_backward = lasagne.layers.LSTMLayer(l_c_b, N_LSTM_B, backwards=True)
     
 #    out = lasagne.layers.get_output(l_sum, sym_x)
 #    out.eval({sym_x: })

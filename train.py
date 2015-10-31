@@ -57,6 +57,7 @@ def main():
     sym_mask = T.matrix('mask')
     sym_x = T.tensor3()
 
+    TOL = 1e-5
     num_epochs = config.epochs
     batch_size = config.batch_size
 
@@ -100,7 +101,7 @@ def main():
     lambda_reg = config.lambda_reg
     params = nn.layers.get_all_params(l_out, regularizable=True)
     reg_term = sum(T.sum(p**2) for p in params)
-    cost = T.nnet.categorical_crossentropy(probs_flat, sym_y.flatten())
+    cost = T.nnet.categorical_crossentropy(T.clip(probs_flat, TOL, 1-TOL), sym_y.flatten())
     cost = T.sum(cost*sym_mask.flatten()) / T.sum(sym_mask) + lambda_reg * reg_term
 
     # Retrieve all parameters from the network

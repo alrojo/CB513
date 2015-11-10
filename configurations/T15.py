@@ -12,9 +12,13 @@ batch_size = 64
 N_CONV_A = 16
 N_CONV_B = 16
 N_CONV_C = 16
+N_CONV_D = 12
+N_CONV_E = 12
 F_CONV_A = 3
 F_CONV_B = 5
 F_CONV_C = 7
+F_CONV_D = 9
+F_CONV_E = 11
 N_L1 = 200
 N_LSTM_F = 400
 N_LSTM_B = 400
@@ -49,7 +53,13 @@ def build_model():
     l_conv_c = lasagne.layers.Conv1DLayer(
 	incoming=l_dim_a, num_filters=N_CONV_C, pad='same',
 	filter_size=F_CONV_C, stride=1, nonlinearity=lasagne.nonlinearities.rectify)
-    l_c_a = lasagne.layers.ConcatLayer([l_conv_a, l_conv_b, l_conv_c], axis=1)
+    l_conv_d = lasagne.layers.Conv1DLayer(
+	incoming=l_dim_a, num_filters=N_CONV_D, pad='same',
+	filter_size=F_CONV_D, stride=1, nonlinearity=lasagne.nonlinearities.rectify)
+    l_conv_e = lasagne.layers.Conv1DLayer(
+	incoming=l_dim_a, num_filters=N_CONV_E, pad='same',
+	filter_size=F_CONV_E, stride=1, nonlinearity=lasagne.nonlinearities.rectify)
+    l_c_a = lasagne.layers.ConcatLayer([l_conv_a, l_conv_b, l_conv_c, l_conv_d, l_conv_e], axis=1)
     l_dim_b = lasagne.layers.DimshuffleLayer(
 	l_c_a, (0,2,1))
 #    l_c_b = lasagne.layers.ConcatLayer([l_in,l_dim_b], axis=2)

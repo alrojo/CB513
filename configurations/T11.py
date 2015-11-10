@@ -17,11 +17,11 @@ n_inputs = 42
 num_classes = 8
 seq_len = 700
 optimizer = "adagrad"
-lambda_reg = 0.0001
+lambda_reg = 0.0
 cut_grad = 20
 
 learning_rate_schedule = {
-    0: 0.011,
+    0: 0.01,
     150: 0.01,
     175: 0.005,
 }

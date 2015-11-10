@@ -7,7 +7,7 @@ start_saving_at = 0
 save_every = 20
 #write_every_batch = 10
 
-epochs = 300
+epochs = 400
 batch_size = 64
 N_CONV_A = 16
 N_CONV_B = 16
@@ -52,10 +52,10 @@ def build_model():
     l_c_a = lasagne.layers.ConcatLayer([l_conv_a, l_conv_b, l_conv_c], axis=1)
     l_dim_b = lasagne.layers.DimshuffleLayer(
 	l_c_a, (0,2,1))
-#    l_c_b = lasagne.layers.ConcatLayer([l_in,l_dim_b], axis=2)
+    l_c_b = lasagne.layers.ConcatLayer([l_in,l_dim_b], axis=2)
     # 2. First Dense Layer    
     l_reshape_a = lasagne.layers.ReshapeLayer(
-        l_in, (batch_size*seq_len,n_inputs))
+        l_in, (batch_size*seq_len,n_inputs+16*3))
     l_1 = lasagne.layers.DenseLayer(
         l_reshape_a, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
     l_reshape_b = lasagne.layers.ReshapeLayer(

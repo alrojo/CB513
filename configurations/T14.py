@@ -1,6 +1,6 @@
 import lasagne
 
-# 3 conv after FC, 400 LSTM
+# 3 conv before FC, 400 LSTM
 
 #validate_every = 40
 start_saving_at = 0

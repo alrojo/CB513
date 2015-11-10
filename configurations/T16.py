@@ -65,7 +65,7 @@ def build_model():
     l_c_b = lasagne.layers.ConcatLayer([l_in,l_dim_b], axis=2)
     # 2. First Dense Layer    
     l_reshape_a = lasagne.layers.ReshapeLayer(
-        l_in, (batch_size*seq_len,n_inputs+16*3+12*2))
+        l_c_b, (batch_size*seq_len,n_inputs+16*3+12*2))
     l_1 = lasagne.layers.DenseLayer(
         l_reshape_a, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
     l_reshape_b = lasagne.layers.ReshapeLayer(

@@ -72,11 +72,11 @@ def build_model():
         l_1, (batch_size, seq_len, N_L1))
 #    batch_size, seq_len, _ = l_in.input_var.shape
     # 3. LSTM Layers
-    l_c_b = lasagne.layers.ConcatLayer([l_reshape_b, l_dim_b], axis=2)
-    l_forward = lasagne.layers.LSTMLayer(l_c_b, N_LSTM_F)
+#    l_c_b = lasagne.layers.ConcatLayer([l_reshape_b, l_dim_b], axis=2)
+    l_forward = lasagne.layers.LSTMLayer(l_reshape_b, N_LSTM_F)
 #    l_vertical = lasagne.layers.ConcatLayer([l_in,l_forward], axis=2)
 #    l_sum = lasagne.layers.ConcatLayer([l_in, l_forward],axis=-1)
-    l_backward = lasagne.layers.LSTMLayer(l_c_b, N_LSTM_B, backwards=True)
+    l_backward = lasagne.layers.LSTMLayer(l_reshape_b, N_LSTM_B, backwards=True)
     
 #    out = lasagne.layers.get_output(l_sum, sym_x)
 #    out.eval({sym_x: })

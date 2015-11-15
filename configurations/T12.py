@@ -1,5 +1,5 @@
 import lasagne
-
+import numpy as np
 # OutGate Different VERTICAL
 
 #validate_every = 40
@@ -74,7 +74,7 @@ def build_model():
     return l_in, l_out
 
 def set_weights():
-    metadata_path = "metadata/weight_save/dump_T12-201511.pkl"
+    metadata_path = "metadata/weight_save/dump_T12-20151110-203928-120.pkl"
     print "setting weights to: %s" %metadata_path
     metadata = np.load(metadata_path)
     return metadata['param_values']

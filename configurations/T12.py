@@ -17,13 +17,13 @@ n_inputs = 42
 num_classes = 8
 seq_len = 700
 optimizer = "adagrad"
-lambda_reg = 0.00005
+lambda_reg = 0.0
 cut_grad = 20
 
 learning_rate_schedule = {
     0: 0.0125,
-    150: 0.011,
-    175: 0.0075,
+    75: 0.0075,
+    175: 0.0005,
 }
 
 def build_model():

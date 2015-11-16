@@ -38,7 +38,8 @@ def build_model():
     # 2. First Dense Layer    
     l_reshape_a = lasagne.layers.ReshapeLayer(
         l_in, (batch_size*seq_len,n_inputs))
-    l_1_batchnorm = batchnormlayer(l=l_reshape_a, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
+#    l_1_batchnorm = batchnormlayer(l=l_reshape_a, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
+    l_1_batchnorm = lasagne.layers.DenseLayer(l_reshape_a, num_units=N_L1)
     l_reshape_b = lasagne.layers.ReshapeLayer(
         l_1_batchnorm, (batch_size, seq_len, N_L1))
     # 3. LSTM Layers
@@ -49,7 +50,8 @@ def build_model():
     # 4. Second Dense Layer
     l_reshape_c = lasagne.layers.ReshapeLayer(
         l_sum, (batch_size*seq_len, N_LSTM_F+N_LSTM_B))
-    l_2_batchnorm = batchnormlayer(l=l_reshape_c, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
+#    l_2_batchnorm = batchnormlayer(l=l_reshape_c, num_units=N_L2, nonlinearity=lasagne.nonlinearities.rectify)
+    l_2_batchnorm = lasagne.layers.DenseLayer(l_reshape_c, num_units=N_L2)
     # 5. Output Layer
     l_recurrent_out = lasagne.layers.DenseLayer(
         l_2_batchnorm, num_units=num_classes, nonlinearity=lasagne.nonlinearities.softmax)

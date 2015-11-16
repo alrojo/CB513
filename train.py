@@ -96,7 +96,7 @@ def main():
     cost = T.sum(cost*sym_mask.flatten()) / T.sum(sym_mask) + lambda_reg * reg_term
 
     # Retrieve all parameters from the network
-    all_params = nn.layers.get_all_params(l_out)
+    all_params = nn.layers.get_all_params(l_out, trainable=True)
     # Setting the weights
     if hasattr(config, 'set_weights'):
         nn.layers.set_all_param_values(l_out, config.set_weights())

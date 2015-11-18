@@ -167,7 +167,7 @@ def main():
     # Start training
     
     if config.batch_norm:
-        collect_out = lasagne.layers.get_output(l_out, sym_x, deterministic=True, collect=True)
+        collect_out = nn.layers.get_output(l_out, sym_x, deterministic=True, collect=True)
         f_collect = theano.function([sym_x],
                                 [collect_out])
 

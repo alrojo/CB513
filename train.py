@@ -165,6 +165,12 @@ def main():
     print("X shape")
     print(X_valid.shape)
     # Start training
+    
+    if config.batch_norm:
+        collect_out = lasagne.layers.get_output(l_out, sym_x, deterministic=True, collect=True)
+        f_collect = theano.function([sym_x],
+                                [collect_out])
+
     for epoch in range(num_epochs):
 
         if (epoch % 10) == 0:
@@ -229,6 +235,8 @@ def main():
             print "  average norm: %.5f" % mean_norm
 
         if 1==1:#(i + 1) % config.validate_every == 0:
+            if config.batch_norm:
+                _ = f_collect(X_train)
             sets = [#('train', X_train, y_train, mask_train, all_losses_eval_train, all_accuracy_eval_train),
                     ('valid', X_valid, y_valid, mask_valid, all_losses_eval_valid, all_accuracy_eval_valid),
                     ('test', X_test, y_test, mask_test, all_losses_eval_test, all_accuracy_eval_test)]

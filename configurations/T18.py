@@ -1,5 +1,6 @@
 import lasagne
 import parmesan
+import theano.tensor as T
 
 #validate_every = 40
 start_saving_at = 0
@@ -35,7 +36,7 @@ def batchnormlayer(l, num_units, nonlinearity, W=lasagne.init.GlorotUniform(), b
 def build_model():
     # 1. Input layer
     l_in = lasagne.layers.InputLayer(shape=(None, seq_len, n_inputs))
-    batchsize, _, _ = l_in.input_var.shape
+    batchsize, _, _ = T.shape(l_in.input_var)
     # 2. First Dense Layer    
     l_reshape_a = lasagne.layers.ReshapeLayer(
         l_in, (batchsize*seq_len,n_inputs))

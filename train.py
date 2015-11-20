@@ -183,20 +183,12 @@ def main():
 
 #        print "Shuffling data"
         seq_names = np.arange(0,data.num_seq_train)
-        np.random.shuffle(seq_names)
-#        print "Shuffling X"        
+        np.random.shuffle(seq_names)     
         X_train = X_train[seq_names]
-#        print "Shuffling y"
         y_train = y_train[seq_names]
-#        print "Shuffling mask"
         mask_train = mask_train[seq_names]
 
-#        print "  train"
         num_batches = data.num_seq_train // batch_size
-#        print "data.num_seq_train: %d" % data.num_seq_train      
-#        print "num batches %d" %num_batches
-#        time.sleep(20)
-#        print "  train"
         losses = []
         preds = []
         norms = []

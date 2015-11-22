@@ -118,7 +118,9 @@ def main():
     elif optimizer == "adagrad":
         updates = nn.updates.adagrad(updates, all_params, learning_rate)
     elif optimizer == "nag":
-        updates = nn.updates.nesterov_momentum(updates, all_params, learning_rate, 0.9)
+        momentum_schedule = config.momentum_schedule
+        momentum = theano.shared(np.float32(momentum_schedule[0]))
+        updates = nn.updates.nesterov_momentum(updates, all_params, learning_rate, momentum)
     else:
         sys.exit("please choose either <rmsprop/adagrad/nag> as second input param")
             
@@ -178,10 +180,14 @@ def main():
 
         if epoch in learning_rate_schedule:
             lr = np.float32(learning_rate_schedule[epoch])
-#            print "  setting learning rate to %.7f" % lr
+            print "  setting learning rate to %.7f" % lr
             learning_rate.set_value(lr)
-
-#        print "Shuffling data"
+        if optimizer == "nag":
+            if epoch in momentum_schedule:
+                mu = np.float32(momentum_schedule[epoch])
+                print "  setting learning rate to %.7f" % mu
+                momentum.set_value(mu)
+        print "Shuffling data"
         seq_names = np.arange(0,data.num_seq_train)
         np.random.shuffle(seq_names)     
         X_train = X_train[seq_names]

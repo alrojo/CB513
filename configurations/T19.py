@@ -6,7 +6,7 @@ import lasagne
 start_saving_at = 0
 save_every = 20
 #write_every_batch = 10
-
+batch_norm=False
 epochs = 400
 batch_size = 64
 N_CONV_A = 16

@@ -115,6 +115,8 @@ def main():
 
     if optimizer == "rmsprop":
         updates = nn.updates.rmsprop(updates, all_params, learning_rate)
+    elif optimizer == "adadelta":
+        updates = nn.updates.adadelta(updates, all_params, learning_rate)
     elif optimizer == "adagrad":
         updates = nn.updates.adagrad(updates, all_params, learning_rate)
     elif optimizer == "nag":
@@ -122,7 +124,7 @@ def main():
         momentum = theano.shared(np.float32(momentum_schedule[0]))
         updates = nn.updates.nesterov_momentum(updates, all_params, learning_rate, momentum)
     else:
-        sys.exit("please choose either <rmsprop/adagrad/nag> as second input param")
+        sys.exit("please choose either <rmsprop/adagrad/adadelta/nag> in configfile")
             
     # Theano functions for training and computing cost
     print "config.batch_size %d" %batch_size

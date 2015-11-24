@@ -23,17 +23,17 @@ N_L2 = 200
 n_inputs = 42
 num_classes = 8
 seq_len = 700
-optimizer = "nag"
+optimizer = "rmsprop"
 lambda_reg = 0.0001
 cut_grad = 20
 
 learning_rate_schedule = {
-    0: 0.025,
-    300: 0.015,
-    310: 0.01,
-    320: 0.005,
-    330: 0.0025,
-    340: 0.001,
+    0: 0.0025,
+    300: 0.0015,
+    310: 0.001,
+    320: 0.0005,
+    330: 0.00025,
+    340: 0.0001,
 }
 
 momentum_schedule = {

@@ -2,6 +2,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 import lasagne as nn
+import string
 import sys
 from datetime import datetime, timedelta
 import importlib
@@ -73,6 +74,13 @@ def main():
     print("Building network ...")
     l_in, l_out = config.build_model()
 
+    all_layers = nn.layers.get_all_layers(l_out)
+    num_params = nn.layers.count_params(l_out)
+    print("  number of parameters: %d" % num_params)
+    print("  layer output shapes:")
+    for layer in all_layers:
+        name = string.ljust(layer.__class__.__name__, 32)
+        print("    %s %s" % (name, nn.layers.get_output_shape(layer)))
     print("Creating cost function")
     # lasagne.layers.get_output produces a variable for the output of the net
     out_train = nn.layers.get_output(

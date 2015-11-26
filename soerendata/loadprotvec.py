@@ -93,12 +93,12 @@ def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100):
 
 
 if __name__ == '__main__':
-    protein_file = 'cullpdb+profile_6133_filtered.npy.gz'
+    protein_file = '../data/cullpdb+profile_6133_filtered.npy.gz'
     protein_vector_file = 'protVec_100d_3grams_clean.csv'
     X = load_protvec_encoding(protein_file, protein_vector_file)
     print X.shape
     print X[101, :10, :10]
-
+    np.save('../data/amino_acids.npy', X)
 
 
 

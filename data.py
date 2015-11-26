@@ -17,6 +17,16 @@ b = np.arange(35,56)
 c = np.hstack((a,b))
 X = X[:,:,c]
 
+# If using ProtVec
+# http://arxiv.org/abs/1503.05140
+addProtVec = True
+if addProtVec:
+    ProtVec = utils.load_gz('data/X_train_protvec.npy')
+    newX = np.zeros((X.shape[0], X.shape[1], X.shape[2] + ProtVec.shape[2]))
+    newX[:,:,:X.shape[2]] = X
+    newX[:,:,X.shape[2]:] = ProtVec
+    X = newX
+    del newX
 
 # getting meta
 num_seqs = np.size(X,0)
@@ -65,6 +75,15 @@ a = np.arange(0,21)
 b = np.arange(35,56)
 c = np.hstack((a,b))
 X_test = X_test[:,:,c]
+
+if addProtVec:
+    ProtVec_test = utils.load_gz('data/X_test_protvec.npy')
+    newX_test = np.zeros((X_test.shape[0], X_test.shape[1], X_test.shape[2] + ProtVec_test.shape[2]))
+    newX_test[:,:,:X_test.shape[2]] = X_test
+    newX_test[:,:,X_test.shape[2]:] = ProtVec_test
+    X_test = newX_test
+    del newX_test
+
 # Setting X
 num_seq_test = np.size(X_test,0)
 del a, b, c

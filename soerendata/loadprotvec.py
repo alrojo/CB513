@@ -98,8 +98,9 @@ if __name__ == '__main__':
     X = load_protvec_encoding(protein_file, protein_vector_file)
     print X.shape
     print X[101, :10, :10]
-    np.save('../data/amino_acids.npy', X)
-
-
-
-
+    print "saving train ..."
+    np.save('../data/X_train_protvec.npy', X)
+    test_file = '../data/cb513+profile_split1.npy.gz'
+    X_test = load_protvec_encoding(test_file, protein_vector_file)
+    print "saving test ..."
+    np.save('../data/X_test_protvec.npy', X)

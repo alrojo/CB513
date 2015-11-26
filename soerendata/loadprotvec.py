@@ -27,7 +27,7 @@ def read_protvec(fn):
     return aa_triplet2protvec
 
 
-def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100, subset):
+def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100, subset='train'):
     # amino acid encodings see
     # http://www.princeton.edu/~jzthree/datasets/ICML2014/dataset_readme.txt
     aas = ['A', 'C', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'N', 'Q',
@@ -103,12 +103,13 @@ def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100, 
 if __name__ == '__main__':
     protein_file = '../data/cullpdb+profile_6133_filtered.npy.gz'
     protein_vector_file = 'protVec_100d_3grams_clean.csv'
-    X = load_protvec_encoding(protein_file, protein_vector_file, subset='train')
-    print X.shape
-    print X[101, :10, :10]
+    X_train = load_protvec_encoding(protein_file, protein_vector_file, subset='train')
+    print X_train.shape
+    print X_train[101, :10, :10]
     print "saving train ..."
-    np.save('../data/X_train_protvec.npy', X)
+    np.save('../data/X_train_protvec.npy', X_train)
     test_file = '../data/cb513+profile_split1.npy.gz'
     X_test = load_protvec_encoding(test_file, protein_vector_file, subset='test')
+    print X_test.shape
     print "saving test ..."
-    np.save('../data/X_test_protvec.npy', X)
+    np.save('../data/X_test_protvec.npy', X_test)

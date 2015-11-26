@@ -10,6 +10,7 @@
 
 import gzip
 import numpy as np
+import sys
 
 
 # read protvec and return tiplet -> protvec dict
@@ -26,7 +27,7 @@ def read_protvec(fn):
     return aa_triplet2protvec
 
 
-def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100):
+def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100, subset):
     # amino acid encodings see
     # http://www.princeton.edu/~jzthree/datasets/ICML2014/dataset_readme.txt
     aas = ['A', 'C', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'N', 'Q',
@@ -40,9 +41,16 @@ def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100):
 
     # could just make X_in an ar
     # load gz proteins
-    with gzip.open(protein_file, 'rb') as f:
-        X_in = np.load(f)
-        X_in = np.reshape(X_in, (5534, 700, 57))
+    if subset == 'train':
+        with gzip.open(protein_file, 'rb') as f:
+            X_in = np.load(f)
+            X_in = np.reshape(X_in, (5534, 700, 57))
+    elif subset == 'test':
+        with gzip.open(protein_file, 'rb') as f:
+            X_in = np.load(f)
+            X_in = np.reshape(X_in, (514, 700, 57))
+    else:
+        sys.exit('pick correct subset')
 
     X_ort_onehot = X_in[:, :, :21]   # load orthogonal columns
     mask = X_in[:, :, 30] * -1 + 1
@@ -95,12 +103,12 @@ def load_protvec_encoding(protein_file, protein_vector_file, protvec_dim = 100):
 if __name__ == '__main__':
     protein_file = '../data/cullpdb+profile_6133_filtered.npy.gz'
     protein_vector_file = 'protVec_100d_3grams_clean.csv'
-    X = load_protvec_encoding(protein_file, protein_vector_file)
+    X = load_protvec_encoding(protein_file, protein_vector_file, subset='train')
     print X.shape
     print X[101, :10, :10]
     print "saving train ..."
     np.save('../data/X_train_protvec.npy', X)
     test_file = '../data/cb513+profile_split1.npy.gz'
-    X_test = load_protvec_encoding(test_file, protein_vector_file)
+    X_test = load_protvec_encoding(test_file, protein_vector_file, subset='test')
     print "saving test ..."
     np.save('../data/X_test_protvec.npy', X)

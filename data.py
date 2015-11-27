@@ -2,9 +2,12 @@ import numpy as np
 import theano
 
 import utils
+import load_protvec
 
 ##### TRAIN DATA #####
 print("Loading train data ...")
+protein_vector_file = 'data/protVec_100d_3grams_clean.csv'
+addProtVec = True
 X_in = utils.load_gz('data/cullpdb+profile_6133_filtered.npy.gz')
 X = np.reshape(X_in,(5534,700,57))
 del X_in
@@ -19,12 +22,12 @@ X = X[:,:,c]
 
 # If using ProtVec
 # http://arxiv.org/abs/1503.05140
-addProtVec = True
+
 if addProtVec:
-    ProtVec = utils.load_gz('data/X_train_protvec.npy')
-    newX = np.zeros((X.shape[0], X.shape[1], X.shape[2] + ProtVec.shape[2]))
+    ProtVec_train = load_protvec.load_protvec_encoding(X, mask, protein_vector_file, protvec_dim = 100)
+    newX = np.zeros((X.shape[0], X.shape[1], X.shape[2] + ProtVec_train.shape[2]))
     newX[:,:,:X.shape[2]] = X
-    newX[:,:,X.shape[2]:] = ProtVec
+    newX[:,:,X.shape[2]:] = ProtVec_train
     X = newX
     del newX
 
@@ -77,7 +80,7 @@ c = np.hstack((a,b))
 X_test = X_test[:,:,c]
 
 if addProtVec:
-    ProtVec_test = utils.load_gz('data/X_test_protvec.npy')
+    ProtVec_test = load_protvec.load_protvec_encoding(X_test, mask_test, protein_vector_file, protvec_dim = 100)
     newX_test = np.zeros((X_test.shape[0], X_test.shape[1], X_test.shape[2] + ProtVec_test.shape[2]))
     newX_test[:,:,:X_test.shape[2]] = X_test
     newX_test[:,:,X_test.shape[2]:] = ProtVec_test

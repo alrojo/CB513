@@ -1,4 +1,4 @@
-out
+out*
 *.npy
 *.pkl
 *.pyc

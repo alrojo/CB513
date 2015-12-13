@@ -7,7 +7,7 @@ import load_protvec
 ##### TRAIN DATA #####
 print("Loading train data ...")
 protein_vector_file = 'data/protVec_100d_3grams_clean.csv'
-addProtVec = True
+addProtVec = False
 X_in = utils.load_gz('data/cullpdb+profile_6133_filtered.npy.gz')
 X = np.reshape(X_in,(5534,700,57))
 del X_in

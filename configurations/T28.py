@@ -22,7 +22,7 @@ n_inputs = 142
 num_classes = 8
 seq_len = 700
 optimizer = "rmsprop"
-lambda_reg = 0.00001
+lambda_reg = 0.0001
 cut_grad = 20
 
 learning_rate_schedule = {

@@ -24,12 +24,13 @@ n_inputs = 42
 num_classes = 8
 seq_len = 700
 optimizer = "rmsprop"
-lambda_reg = 0.0003 
+lambda_reg = 0.0002 
 cut_grad = 20
 
 learning_rate_schedule = {
     0: 0.0025,
-    300: 0.0015,
+    10: 0.004,
+    300: 0.0025,
     310: 0.001,
     320: 0.0005,
     330: 0.00025,
@@ -87,9 +88,3 @@ def build_model():
         l_recurrent_out, (batch_size, seq_len, num_classes))
 
     return l_in, l_out
-
-def set_weights():
-    metadata_path = "metadata/weight_save/dump_T27-20151213-080541-300.pkl"
-    print "setting weights to: %s" % metadata_path
-    metadata = np.load(metadata_path)
-    return metadata['param_values']

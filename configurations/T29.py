@@ -1,4 +1,5 @@
 import lasagne
+import numpy as np
 
 # 3 conv before FC, 400 LSTM
 
@@ -87,3 +88,9 @@ def build_model():
         l_recurrent_out, (batch_size, seq_len, num_classes))
 
     return l_in, l_out
+
+def set_weights():
+    metadata_path = "metadata/weight_save/dump_T29-20151213-081320-300.pkl"
+    print "setting weights to: %s" % metadata_path
+    metadata = np.load(metadata_path)
+    return metadata['param_values']

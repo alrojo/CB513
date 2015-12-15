@@ -18,7 +18,7 @@ mask = X[:,:,30] * -1 + 1
 a = np.arange(0,21)
 b = np.arange(35,56)
 c = np.hstack((a,b))
-X = X[:,:,a]
+X = X[:,:,c]
 
 # If using ProtVec
 # http://arxiv.org/abs/1503.05140
@@ -77,7 +77,7 @@ mask_test = X_test[:,:,30].astype(theano.config.floatX) * -1 + 1
 a = np.arange(0,21)
 b = np.arange(35,56)
 c = np.hstack((a,b))
-X_test = X_test[:,:,a]
+X_test = X_test[:,:,c]
 
 if addProtVec:
     ProtVec_test = load_protvec.load_protvec_encoding(X_test, mask_test, protein_vector_file, protvec_dim = 100)

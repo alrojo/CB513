@@ -1,0 +1,194 @@
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx}
+\usepackage{subcaption}
+
+% Example definitions.
+% --------------------
+\def\x{{\mathbf x}}
+\def\L{{\cal L}}
+
+% Title.
+% ------
+\title{Protein and Secondary Structure Prediction with Convolutions and Vertical-Bidirectional LSTMs}
+
+\name{\small A.~Rosenberg Johansen$^a$, John$^b$, Helene $^c$, Esben$^a$, Gurli $^b$}
+
+\address{\small $^a$ Department for Applied Mathematics and Computer Science, Technical     
+         University of Denmark (DTU), 2800 Lyngby, Denmark\\
+         \small $^b$ Center for Biological Sequence Analysis, Technical University of Denmark (DTU), 2800 Lyngby, Denmark\\
+         \small $^c$ Bioinformatics Centre, Department of Biology, University of Copenhagen, Copenhagen, Denmark\\}
+
+% --------------
+
+\begin{document}
+%\ninept
+%
+\maketitle
+%
+\begin{abstract}
+\textbf{We trained a bidirectional long-short term memory neural network with convolutional filters and hidden states from previous long-short term memory as input for mapping the amino acid and sequence profiles from the CB513 data set onto secondary protein structures. On the test data, we achieved an accuracy of 68.5\% which is an improvement on state-of-the-art. The neural network, which has 2.1 million parameters, consists of three convolutional layers, followed by a dense layer, then bidirectional long-short term memory layers where the hidden state from the forward pass is used as input in the backwards pass, then feed into a dense layer with dropout before the final 8-way softmax layer. The convolutional and dense layers used non-saturating neurons. The network was regularized by dropout, the $L_2$ norm, gradients where normalised and output logit clipped.}
+\end{abstract}
+%
+\begin{keywords}
+biology, deep learning, long-short term neural network, convolutional neural network, GPU
+\end{keywords}
+%
+\section{Introduction}
+\label{sec:intro}
+Current approaches to annotating secondary protein structures from amino acid profiles and sequence profiles makes uses of machine learning methods\cite{zhou2014deep}. Recently deep learning methods for modelling sequential data has emerged and received state of the art performance\cite{sonderby2014protein}.
+
+The approaches has risen as problem of annotating secondary protein structures often is predictable from structures along the sequence of the amino acid and sequence profiles\cite{Oles udtalelse}. A Long-Short Term Memory(LSTM) network has the property of parametizing 'memory cells', which can inform the model about earlier data in a sequence, thus utilizing the sequential structure\cite{Graves2012}. Further the local sequence typology has a high importance for predicting secondary protein structures\cite{Oles udtalelse}. A Convolutional Neural Network(CNN) is an approach to parametrize filters for detecting defined spaces of data \cite{NIPS2012_4824}, thus convolutions propose a method for utilizing the local structures along the sequence of amino acid and sequence profiles.
+
+As the problem of predicting secondary structures given a sequence of amino acid and sequence profiles is not direction or time dependant, as the whole sequence is given at once, Bidirectional LSTM can be utilized to analyse the sequence from both directions\cite{Schuster1997}.
+
+The contribution of this paper is testing convolutional filters on the input sequence and feed the filters into a Bidirectional LSTM. We further test using the hidden state of the forward pass as input for the backwards pass, which to our knowledge has not been tested in LSTM literature. As well as $L^2$ regularization.
+\section{Materials and Methods}
+\subsection{The Dataset}
+\label{ssec:thedataset}
+The test set which we performed predictions on is the CB513 test set on secondary protein structures\footnote{http://www.princeton.edu/~jzthree/datasets/ICML2014/}. To train our classifier we used the filtered version of cb513 data set with no further preprocessing applied. For every point in the sequence there is a recording of the amino acid and sequence profiles. The purpose of the data set is to predict the secondary structure of every sequence step. For validation purposes we extracted 256 sequences in the training set to optimize hyper parameters in our model.
+\subsection{The Model}
+\label{sec:thecnnarchitecture}
+The architecture of the network is defined by three different types of learn-able layers, the fully connected, the convolutional layer and the LSTM. Below, we describe how the different layer types used in our network in more detail.
+\subsubsection{Neural Network}
+\label{sssec:neuralnetwork}
+The fully connected layer, also known as the Multi Layer Perceptron(MLP)\cite{ruck1990multilayer} is a collection of layers which performs non-linear transformations on the previous layer. The first layer, $l=0$, is considered the input. In our case a one-hot encoding of the amino acid and sequence profiles. The standard MLP is defined in the following mathematical linear algebraic operation:
+
+\begin{equation} \label{eq:1}
+z_{l+1} = h_l \theta_{l+1}
+\end{equation}
+\begin{equation} \label{eq:2}
+h_{l+1} = a(z_{l+1})
+\end{equation}
+
+Where $h_l$ is the current layer and $\theta$ is the weight matrix used to compute the linear combination of the input; $z_{l+1}$. A non-linear activation function, $a(z_{l+1})$ is applied to the linear combination of the input which results in the next layer; $h_{l+1}$.
+
+Most commonly used functions for the activation function $a(z)$ includes the Logistic Sigmoid $a(z)=1/(1+e^{-z})$ and the Hyperbolic Tangent $a(z)=(e^z-e^{-z})/(e^z+e^{-z})$. Non-saturating functions such as the Rectifier Linear Unit (ReLU) $a(z) = max(0,z)$ has become popular as their gradients do not vanish and it is computationally easier, which makes optimizing the network faster using stochastic gradient descent \cite{NIPS2012_4824}. Unfortunately the ReLU suffers from ``dead'' gradients (large gradients could cause the weights to update in such a way that the neuron will never activate), which can make the network unable to learn. To avoid this problem we are using the Leaky ReLU $a(z) = max(\alpha z, z)$ with $\alpha=0.3$\cite{DBLP:journals/corr/HeZR015}, where ''Leaky'' refers to the added slope when $a(z)<0$.
+
+As regularization technique, to avoid overfitting, we add Bernoulli dropouts\ref{} as a layer, it works as defined:
+\begin{equation} \label{eq:2}
+h_{l+1} = h_l \odot p
+\end{equation}
+where $p_i \epsilon [0, 1]$ is a random sampled number with a hyper parameter determining bias towards 0 or 1 and $\odot$ is element-wise multiplication.
+
+\subsubsection{Convolutional Neural Network}
+\label{sssec:convolutionalneuralnetwork}
+The 1D convolutional layers are implemented as follows:
+\begin{equation} \label{eq:2}
+z^{l+1}_{ik} = x^{l}_{i} \theta^{l+1}_{k}
+\end{equation}
+\begin{equation}
+h^{l+1}_{ik} = a(z_{ik})
+\end{equation}
+The difference between equation \ref{eq:1} and \ref{eq:2} is the input to the forward propagation function, where $x_l$ is a $k c$-by-$1$ vector that represents a co-located $k$ vector in $c$ channels. The $\theta_l$ weight vector thus becomes a spatial weight filter with $n = k c$ connections between the input layer and each computed neuron in the output layer. The dimensionality of $\theta_l$ is a $d$-by-$n$ matrix, where d is the number of filters. Convolutional layers thus becomes configurable to their filter size $k$ and amount of filters $d$\cite{NIPS2012_4824}. The architecture on how to apply the layers leaves many different combinations. It has been found that multiple convolutional layers on top of one another allows to reduce parameter space and model nonlinear filters\cite{Simonyan14c}. Also using different filter sizes on the same input can increase performance\cite{sonderby2015convolutional}. In our solution we found inputs of different sizes to have the superior validation accuracy.
+
+\subsubsection{Bidirectional Long-Short Term Memory with Vertical Links}
+\label{sssec:blstm}
+A Recurrent Neural Network(RNN) is a type of neural network layer that works along the sequence of the data and utilizes computation on previous input in the sequence\cite{}. The LSTM is a special version of the RNN that uses memory cells to increase focus on important part of the sequence and improve convergence speed. It is defined as described in Graves, 2012\cite{Graves2012} without peepholes.
+\begin{equation} \label{eq:3}
+i_t = \sigma(x_tW_{xi}+h_{t-1}W_{hi}+b_i)
+\end{equation}
+\begin{equation}
+f_t = \sigma(x_tW_{xf}+h_{t-1}W_{hf}+b_f)
+\end{equation}
+\begin{equation}
+o_t = \sigma(x_tW_{xo}+h_{t-1}W_{ho}+b_o)
+\end{equation}
+\begin{equation}
+g_t = tanh(x_tW_{xg}+h_{t-1}W_{hg}+b_g)
+\end{equation}
+\begin{equation}
+c_t = f_t\odot c_{t-1}+i_t\odot g_t
+\end{equation}
+\begin{equation}
+h_t = o_t \odot tanh(c_t)
+\end{equation}
+Where $\sigma(z)$ is the sigmoid function $1/(1+e^{-z})$ and $x_t$ is the input from the previous layer: $h_t^{l-1}$.
+The LSTM only works in one direction, thus to utilize information from both direction two LSTM's working from each direction are applied. Their hidden states, $h_t$ for $t = [1, 2, ..., T]$ where $T$ is sequence length, Are stacked such as suggested by Schuster \& Paliwal, 1997 \cite{Schuster1997}.
+
+Further to incorporate sharing of hidden states, we propose the "Vertical Links" which is, illustrated in figure \ref{}, stacking the input, $x_t$, to the next pass with the hidden state, $h_t$, of the previous pass. This operation allows the backwards pass to have a hidden state from both directions while computing. The concept could be extended to stacking several passes on top of one another with "Vertical Links", however we leave this for further research.
+
+\subsubsection{Overall architecture}
+\label{sssec:overallarchitecture}
+As depicted in figure \ref{fig:CNN} the network contains nine layers, the first three are convolutional layers with different filter sizes on the input, these are then concatenated with the input and feed to a fully connected network representing the fourth layer, the fifth and sixth layer are LSTMs working in forwards and backwards direction. The LSTMs outputs are concatenated and feed to a seventh layer being a dropout layer, the eight layer is a dense layer. The ninth layer is an 8-way softmax function(to normalize the output) which provides us with a probability of the secondary protein structures. To optimize, train, our network we minimize the multi class cross-entrophy objective on the basis of the probability output from the neural network:
+\begin{equation}
+L(x, y) = -\sum_c y_c \ln(f_c(x))
+\end{equation}
+Where $x$ the input vetor, $y$ the true label, $f(x)$ the neural networks probability prediction and $c$ the class. The probability prediction is clipped to be between $1e-5$ and $1 - 1e-5$ to stabilize training and avoid exploding gradients.
+
+We further apply the $L_2$ norm such that.
+\begin{equation}
+regterm(\lambda, \theta) = \lambda \norm{ \biggl(\sum_{n=1}^N \mathbf{\theta}^2_{n}\biggr) }
+\end{equation}
+
+Where $\lambda$ is a tuneable hyperparameter, $N$ is the number of non-bias weights and $\theta$ is the weights in the neural network. This is then added to the cost function.
+
+\begin{equation}
+L_{reg}(x, y) = L(y, f(x)) + regterm(\lambda, \theta)
+\end{equation}
+
+For details on overall architecture see appendix \ref{}.
+\subsubsection{Details of learning}
+\label{sssec:Detailsoflearning}
+We trained our model with the first order method: stochastic gradient descent(SGD). SGD works by utilizing chain ruling to take the partial derivative of the loss function with respect to each weight vector in the network such that.
+\begin{equation}
+g = \frac{\partial L(x, y)}{\partial \theta} = \frac{\partial L(x, y)}{\partial f(x)} \frac{\partial f(x)}{\partial \theta}
+\end{equation}
+Where the partial derivatives, $g$, are used to update the weights, such that:
+\begin{equation}
+\theta_{b+1} = \theta_b - \alpha g_b
+\end{equation}
+Where $\alpha$ is a tunable learning parameter determining the size of gradients applied and $b$ is the current training batch.
+We use a version of SGD called RMSProp\ref{hinton} which uses historic information to adapt the learning rate for every parameter doing training, such that:
+\begin{equation}
+\theta_{b+1} = \theta_b - \alpha G^{-1/2}_b \odot g_b
+\end{equation}
+Where $G$ is a moving average og squared gradients, such that:
+\begin{equation}
+G_{b+1} = \rho G_{b} + (1-\rho) g^2_{b}
+\end{equation}
+Where $\rho$ is the gradient moving average decay factor
+Further to avoid exploiting gradients we normalized the gradient if it norm of the gradients exceeded a threshold of 20:
+\begin{equation}
+norm_2 = \|\frac{g}{batch\_size}\|_2
+\end{equation}
+All of the gradients were scaled by the $\frac{20}{norm}$
+
+Hyper parameters used in the models trained are in Appendix \ref{}
+
+We trained the network until we minimized the validation error, occasionally we would run well performing models on the test set and found a high correlation between validation and the test performance.
+
+The training was performed on a Nvidia Titan X GPU, we used the python built Theano library\cite{bergstra+al:2010-scipy}\cite{Bastien-Theano-2012} to compile to CUDA(GPU interpretable language). On top of Theano we applied the neural network specific Lasagne library to built and configure our models\cite{sander_dieleman_2015_27878}.\\
+
+The models took on average 24 hours to train on an Nvidia Titan X.
+
+\section{Results and Applications}
+Our results on the CB513 datare summerized in table \ref{tab:AUC}. Our network average achieves an accuracy of $68.5\%$. The best known previous result at $67.4\%$ with an approach of using a Bi-Directional LSTM.
+\begin{table}[htb]
+    \centering
+
+    \begin{tabular}{|l|l|}
+    \hline
+    Models & AUC    \\ \hline
+    Best know result, S\o nderby et al. 2014 \cite{sonderby2014protein}    & 0.674 \\
+    Bi-LSTM & 0.674 \\
+    Bi-LSTM w. $L^2$    & 0.677 \\
+    Vertical Bi-LSTM w. $L^2$     & 0.680 \\
+    CNN Bi-LSTM w. $L^2$   & 0.683 \\
+    CNN Vertical Bi-LSTM w. $L^2$ & 0.685 \\ \hline
+    20 model avg. CNN Vertical Bi-LSTM w. $L^2$ & \textbf{0.42} \\ \hline
+    \end{tabular}
+
+    \caption{Benchmark experiment amongst various neural networks models.}
+    \label{tab:AUC}
+It is visable from the 
+
+
+\end{table}
+
+\section{Discussion}
+Our results show that convolutional filters, vertical links and $L^2$ regularization are all able to improve performance, and their improvement are not exhaustive of one another. During the training we further found that vertical links with no convolutional filters did not have any significant improvement when using $L^2$ regularization. However, when convolutional filters where applied $L^2$ regularization became critical, as the network otherwise would overfit. So adequate testing of hyperparameters are essential for constructing an optimal fit between convolutional filters, vertical links and $L^2$ regularization.
+
+\bibliographystyle{IEEE}
+\bibliography{strings,refs}
+
+\end{document}

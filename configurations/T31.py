@@ -1,7 +1,7 @@
 import lasagne
 import numpy as np
 import BatchNormLayer
-batchnorm = BatchNormLayer.batch_norm
+batch_norm = BatchNormLayer.batch_norm
 # 3 conv before FC, 400 LSTM
 
 #validate_every = 40
@@ -9,7 +9,6 @@ start_saving_at = 0
 save_every = 20
 #write_every_batch = 10
 
-batch_norm = False
 epochs = 400
 batch_size = 64
 N_CONV_A = 16
@@ -26,7 +25,7 @@ n_inputs = 42
 num_classes = 8
 seq_len = 700
 optimizer = "rmsprop"
-lambda_reg = 0.0003 
+lambda_reg = 0.0001
 cut_grad = 20
 
 learning_rate_schedule = {
@@ -69,10 +68,10 @@ def build_model():
         l_c_b, (batch_size*seq_len,n_inputs+16*3))
     l_1 = lasagne.layers.DenseLayer(
         l_reshape_a, num_units=N_L1, nonlinearity=lasagne.nonlinearities.rectify)
-    l_1 = batch_norm(l_1)
+    l_1_b = batch_norm(l_1)
 
     l_reshape_b = lasagne.layers.ReshapeLayer(
-        l_1, (batch_size, seq_len, N_L1))
+        l_1_b, (batch_size, seq_len, N_L1))
 #    batch_size, seq_len, _ = l_in.input_var.shape
     # 3. LSTM Layers
 #    l_c_b = lasagne.layers.ConcatLayer([l_reshape_b, l_dim_b], axis=2)
@@ -90,10 +89,10 @@ def build_model():
     # Our output layer is a simple dense connection, with 1 output unit
     l_2 = lasagne.layers.DenseLayer(
 	lasagne.layers.dropout(l_reshape_b, p=0.5), num_units=N_L2, nonlinearity=lasagne.nonlinearities.rectify)
-    l_2 = batch_norm(l_2)
+    l_2_b = batch_norm(l_2)
     # 5. Output Layer
     l_recurrent_out = lasagne.layers.DenseLayer(
-        l_2, num_units=num_classes, nonlinearity=lasagne.nonlinearities.softmax)
+        l_2_b, num_units=num_classes, nonlinearity=lasagne.nonlinearities.softmax)
 
     # Now, reshape the output back to the RNN format
     l_out = lasagne.layers.ReshapeLayer(

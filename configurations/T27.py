@@ -24,7 +24,7 @@ n_inputs = 42
 num_classes = 8
 seq_len = 700
 optimizer = "rmsprop"
-lambda_reg = 0.0003 
+lambda_reg = 0.0001 
 cut_grad = 20
 
 learning_rate_schedule = {
@@ -71,10 +71,10 @@ def build_model():
 #    out = lasagne.layers.get_output(l_sum, sym_x)
 #    out.eval({sym_x: })
     #Concat layer
-    l_sum = lasagne.layers.ConcatLayer(incomings=[l_forward, l_backward], axis=2)
+    l_sum = lasagne.layers.ConcatLayer(incomings=[l_vertical, l_backward], axis=2)
     # 4. Second Dense Layer
     l_reshape_b = lasagne.layers.ReshapeLayer(
-        l_sum, (batch_size*seq_len, N_LSTM_F+N_LSTM_B))
+        l_sum, (batch_size*seq_len, N_LSTM_F+N_LSTM_B+N_L1))
     # Our output layer is a simple dense connection, with 1 output unit
     l_2 = lasagne.layers.DenseLayer(
 	lasagne.layers.dropout(l_reshape_b, p=0.5), num_units=N_L2, nonlinearity=lasagne.nonlinearities.rectify)
@@ -88,8 +88,8 @@ def build_model():
 
     return l_in, l_out
 
-def set_weights():
-    metadata_path = "metadata/weight_save/dump_T27-20151213-080541-300.pkl"
-    print "setting weights to: %s" % metadata_path
-    metadata = np.load(metadata_path)
-    return metadata['param_values']
+#def set_weights():
+#    metadata_path = "metadata/weight_save/dump_T27-20151213-080541-300.pkl"
+#    print "setting weights to: %s" % metadata_path
+#    metadata = np.load(metadata_path)
+#    return metadata['param_values']

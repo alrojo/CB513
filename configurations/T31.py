@@ -89,10 +89,10 @@ def build_model():
     # Our output layer is a simple dense connection, with 1 output unit
     l_2 = lasagne.layers.DenseLayer(
 	lasagne.layers.dropout(l_reshape_b, p=0.5), num_units=N_L2, nonlinearity=lasagne.nonlinearities.rectify)
-    l_2_b = batch_norm(l_2)
+#    l_2_b = batch_norm(l_2)
     # 5. Output Layer
     l_recurrent_out = lasagne.layers.DenseLayer(
-        l_2_b, num_units=num_classes, nonlinearity=lasagne.nonlinearities.softmax)
+        l_2, num_units=num_classes, nonlinearity=lasagne.nonlinearities.softmax)
 
     # Now, reshape the output back to the RNN format
     l_out = lasagne.layers.ReshapeLayer(

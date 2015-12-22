@@ -28,7 +28,7 @@ lambda_reg = 0.0001
 cut_grad = 20
 
 learning_rate_schedule = {
-    0: 0.0025,
+    0: 0.005,
     300: 0.0015,
     310: 0.001,
     320: 0.0005,

@@ -6,6 +6,7 @@ use train.py when data is unzipped in data folder
 
 ## Best network elaborated
 https://github.com/alrojo/RNNProteins/blob/master/configurations/avg1.py
+
 1. InputLayer
 2. 3x ConvLayer(InputLayer, filter_size=3-5-7) + Batch Normalization
 4. DenseLayer1([ConcatLayer, InputLayer]) + Batch Normalization

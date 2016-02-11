@@ -15,7 +15,7 @@ https://github.com/alrojo/RNNProteins/blob/master/configurations/avg1.py
 7. DenseLayer2([LSTMLayerF, LSTMLayerB], dropout=0.5)
 8. OutLayer(DenseLayer2)
 
-Gradients are further normalized and probabilities cutted. RMSProps is used and L2=0.0001
+Gradients are further normalized if too large and probabilities cutted. RMSProps is used and L2=0.0001
 
 ## Project elaboration: Start Juli 2015 - still ongoing
 
@@ -25,7 +25,7 @@ My project was to recreate Søren's results and test: Convolutional layers acros
 
 It took me approximately 3 months (with grid search of 200-300 models) before I managed to achieve similar results to Søren (apperently a DropoutLayer in the DenseLayer before the first LSTM messed with the model performance, which is why it took so long to get Søren's results).
 
-After achieving similar performance I started applying the various "new" techniques to my neural network. It took another 100-150 models gridsearching various combination which led to the model in "Best network elaborated". Notice the use of skip layer and that the convolutions are all on the input.
+After achieving similar performance I started applying the various "new" techniques to my neural network. It took another 100-150 models gridsearching various combination which led to the model in "Best network elaborated", which increased performance by 1.5% compared to Sørens results. Notice the use of skip layer and that the convolutions are all on the input.
 
 I would like to test BN-RNN by baidu (http://arxiv.org/abs/1512.02595) and used Batch Normalization after the LSTM when lasagne starts to support masked Batch Norms.
 

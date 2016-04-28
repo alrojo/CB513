@@ -4,6 +4,19 @@ http://www.princeton.edu/~jzthree/datasets/ICML2014/
 
 use train.py when data is unzipped in data folder
 
+## Reproducing results
+
+### Installation
+Please refer to [lasagne's](https://github.com/Lasagne/Lasagne/wiki/From-Zero-to-Lasagne-on-Ubuntu-14.04) for installation and setup of GPU environment on an Ubuntu 14.04 machine.
+
+
+### Getting repository
+Go to desired folder for repo and type in terminal.
+>> git clone https://github.com/alrojo/RNNProteins.git
+
+### Training models
+
+
 ## Best network elaborated
 https://github.com/alrojo/RNNProteins/blob/master/configurations/avg1.py
 

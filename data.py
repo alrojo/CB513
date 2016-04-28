@@ -12,8 +12,10 @@ TEST_PATH = 'data/cb513+profile_split1.npy.gz'
 
 def get_train():
 	if not os.path.isfile(TRAIN_PATH):
+		print("Train path is not downloaded ...")
 		subprocess.call("./download_train.sh", shell=True)
-
+	else:
+		print("Train path is downloaded ...")
 	print("Loading train data ...")
 	protein_vector_file = 'data/protVec_100d_3grams_clean.csv'
 	addProtVec = False

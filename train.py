@@ -14,7 +14,7 @@ print ("loading data completed ...")
 import utils
 
 if len(sys.argv) != 2:
-    sys.exit("Usage: python train.py <config_name> <rmsprop/adagrad/nag>")
+    sys.exit("Usage: python train.py <config_name>")
 
 config_name = sys.argv[1]
 
@@ -86,7 +86,7 @@ def main():
     print("Creating cost function")
     # lasagne.layers.get_output produces a variable for the output of the net
     out_train = nn.layers.get_output(
-        l_out, sym_x, mask=sym_mask, deterministic=False)
+        l_out, sym_x, deterministic=False)
 
 #    testvar = np.ones((128, 700, 42)).astype('float32')
 #    john = out_train.eval({sym_x: testvar})
@@ -94,8 +94,9 @@ def main():
 #    print(john.shape)
 #    print(john.reshape((-1, num_classes)).shape)
 
+    print("Creating eval function")
     out_eval = nn.layers.get_output(
-        l_out, sym_x, mask=sym_mask, deterministic=True)
+        l_out, sym_x, deterministic=True)
 
     probs_flat = out_train.reshape((-1, num_classes))
 

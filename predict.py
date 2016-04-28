@@ -29,21 +29,13 @@ else:
     subset = 'test'
 
 if subset == "test":
-    X = data.X_test
-    mask = data.mask_test
-    num_seq = data.num_seq_test
+    X, mask, _, num_seq = data.get_test()
 elif subset == "train":
-    X = data.X_train
-    mask = data.mask_train
-    num_seq = data.num_seq_train
+    sys.exit("train not implemented")
 elif subset == "train_valid":
-    X = data.X
-    mask = data.mask
-    num_seq = data.num_seq
+    sys.exit("train_valid not implemented")
 else:
-    X = data.X_valid
-    mask = data.mask_valid
-    num_seq = data.num_seq_valid
+    sys.exit("valid not implemented")
 
 
 for metadata_path in metadata_path_all:

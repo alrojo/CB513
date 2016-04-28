@@ -165,15 +165,8 @@ def main():
 
 
     import data
-    X_train = data.X_train
-    X_valid = data.X_valid
-    X_test = data.X_test
-    y_train = data.labels_train
-    y_valid = data.labels_valid
-    y_test = data.labels_test
-    mask_train = data.mask_train
-    mask_valid = data.mask_valid
-    mask_test = data.mask_test
+    X_train, X_valid, y_train, y_valid, mask_train, mask_valid, num_seq_train \
+			= data.get_train()
     print("y shape")
     print(y_valid.shape)
     print("X shape")
@@ -195,13 +188,13 @@ def main():
                 print "  setting learning rate to %.7f" % mu
                 momentum.set_value(mu)
         print "Shuffling data"
-        seq_names = np.arange(0,data.num_seq_train)
+        seq_names = np.arange(0,num_seq_train)
         np.random.shuffle(seq_names)     
         X_train = X_train[seq_names]
         y_train = y_train[seq_names]
         mask_train = mask_train[seq_names]
 
-        num_batches = data.num_seq_train // batch_size
+        num_batches = num_seq_train // batch_size
         losses = []
         preds = []
         norms = []

@@ -142,11 +142,12 @@ def main():
     print "data.num_classes %d" %num_classes
     if hasattr(config, 'build_model'):
         print("has build model")
-    print("Compiling functions ...")
+    print("Compiling train ...")
     # Use this for training (see deterministic = False above)
     train = theano.function(
         [sym_x, sym_y, sym_mask], [cost, out_train, norm_calc], updates=updates)
 
+    print("Compiling eval ...")
     # use this for eval (deterministic = True + no updates)
     eval = theano.function([sym_x, sym_y, sym_mask], [cost, out_eval])
 
@@ -234,8 +235,7 @@ def main():
             print "  average norm: %.5f" % mean_norm
 
             sets = [#('train', X_train, y_train, mask_train, all_losses_eval_train, all_accuracy_eval_train),
-                    ('valid', X_valid, y_valid, mask_valid, all_losses_eval_valid, all_accuracy_eval_valid),
-                    ('test', X_test, y_test, mask_test, all_losses_eval_test, all_accuracy_eval_test)]
+                    ('valid', X_valid, y_valid, mask_valid, all_losses_eval_valid, all_accuracy_eval_valid)]
             for subset, X, y, mask, all_losses, all_accuracy in sets:
                 print "  validating: %s loss" % subset
                 preds = []
@@ -257,12 +257,12 @@ def main():
                 print(predictions.dtype)
                 loss_eval = np.mean(losses)
                 all_losses.append(loss_eval)
-                
+
 #                acc_eval = np.mean(accuracy)
                 acc_eval = utils.proteins_acc(predictions, y, mask)
                 all_accuracy.append(acc_eval)
 
-#                print "  average evaluation loss (%s): %.5f" % (subset, loss_eval)
+                print "  average evaluation loss (%s): %.5f" % (subset, loss_eval)
                 print "  average evaluation accuracy (%s): %.5f" % (subset, acc_eval)
 
         now = time.time()

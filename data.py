@@ -75,8 +75,8 @@ def get_train():
 	mask_valid = mask[seq_names[5278:5534]]
 	num_seq_train = np.size(X_train,0)
 	num_seq_valid = np.size(X_valid,0)
-	return X_train, X_valid, y_train, y_valid, mask_train, mask_valid, \
-		num_seq_train
+	return X_train, X_valid, labels_train, labels_valid, mask_train, \
+		mask_valid, num_seq_train
 #del split
 ##### TEST DATA #####
 

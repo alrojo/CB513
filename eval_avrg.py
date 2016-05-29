@@ -34,8 +34,7 @@ else:
     subset = 'test'
 
 if subset == "test":
-    y = data.labels_test
-    mask = data.mask_test
+    _, mask, y, _ = data.get_test()
 elif subset == "train":
     y = data.labels_train
     mask = data.mask_train
@@ -64,29 +63,4 @@ for predictions_path in predictions_path_all:
 
 acc = utils.proteins_acc(john, y, mask)
 
-print "Alternative accuracy (%s) is: %.5f" % (subset,acc)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+print "Alternative accuracy (%s) is: %.5f" % (subset,acc) 

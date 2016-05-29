@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import string
 
-if not (len(sys.argv) == 4):
+if not (len(sys.argv) == 3):
     sys.exit("Usage: python debug_metadata.py <topX> <metadata_path>")
 
 topX = int(sys.argv[1])

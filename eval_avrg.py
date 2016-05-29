@@ -5,7 +5,7 @@ import glob
 
 import utils
 
-if len(sys.argv) != 3:
+if len(sys.argv) < 2:
     sys.exit("Usage: python eval_avrg.py <predictions_path> [subset=test]")
 
 predictions_path_all = glob.glob(sys.argv[1] + "*")

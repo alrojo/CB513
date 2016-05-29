@@ -17,8 +17,6 @@ def get_train():
 	else:
 		print("Train path is downloaded ...")
 	print("Loading train data ...")
-	protein_vector_file = 'data/protVec_100d_3grams_clean.csv'
-	addProtVec = False
 	X_in = utils.load_gz(TRAIN_PATH)
 	X = np.reshape(X_in,(5534,700,57))
 	del X_in
@@ -30,17 +28,6 @@ def get_train():
 	b = np.arange(35,56)
 	c = np.hstack((a,b))
 	X = X[:,:,c]
-
-				# If using ProtVec
-				# http://arxiv.org/abs/1503.05140
-
-	if addProtVec:
-		ProtVec_train = load_protvec.load_protvec_encoding(X, mask, protein_vector_file, protvec_dim = 100)
-		newX = np.zeros((X.shape[0], X.shape[1], X.shape[2] + ProtVec_train.shape[2]))
-		newX[:,:,:X.shape[2]] = X
-		newX[:,:,X.shape[2]:] = ProtVec_train
-		X = newX
-		del newX
 
 	# getting meta
 	num_seqs = np.size(X,0)
@@ -82,7 +69,7 @@ def get_train():
 
 def get_test():
 	if not os.path.isfile(TEST_PATH):
-		subprocess.call("./download_train.sh", shell=True)
+		subprocess.call("./download_test.sh", shell=True)
 	print("Loading test data ...")
 	X_test_in = utils.load_gz(TEST_PATH)
 	X_test = np.reshape(X_test_in,(514,700,57))
@@ -95,14 +82,6 @@ def get_test():
 	b = np.arange(35,56)
 	c = np.hstack((a,b))
 	X_test = X_test[:,:,c]
-
-	if addProtVec:
-		ProtVec_test = load_protvec.load_protvec_encoding(X_test, mask_test, protein_vector_file, protvec_dim = 100)
-		newX_test = np.zeros((X_test.shape[0], X_test.shape[1], X_test.shape[2] + ProtVec_test.shape[2]))
-		newX_test[:,:,:X_test.shape[2]] = X_test
-		newX_test[:,:,X_test.shape[2]:] = ProtVec_test
-		X_test = newX_test
-		del newX_test
 
 	# Setting X
 	num_seq_test = np.size(X_test,0)

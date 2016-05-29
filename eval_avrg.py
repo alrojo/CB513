@@ -28,7 +28,7 @@ print(predictions.max())
 import data
 
 if len(sys.argv) == 3:
-    subset = sys.argv[2]:
+    subset = sys.argv[2]
     assert subset in ['train', 'valid', 'test', 'test_valid']
 else:
     subset = 'test'
@@ -51,7 +51,7 @@ print "Accuracy (%s) is: %.5f" % (subset,acc)
 
 ## Alternative model avrg!! ##
 
-john = np.zeros((640,700,data.d))
+john = np.zeros((640,700,8))
 for predictions_path in predictions_path_all:
     print(predictions_path)
     predictions = np.load(predictions_path)#.ravel()

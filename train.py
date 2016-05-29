@@ -13,6 +13,8 @@ print ("loading data ...")
 print ("loading data completed ...")
 import utils
 
+np.random.seed(1)
+
 if len(sys.argv) != 2:
     sys.exit("Usage: python train.py <config_name>")
 
@@ -189,7 +191,7 @@ def main():
                 mu = np.float32(momentum_schedule[epoch])
                 print "  setting learning rate to %.7f" % mu
                 momentum.set_value(mu)
-        print "Shuffling data"
+#        print "Shuffling data"
         seq_names = np.arange(0,num_seq_train)
         np.random.shuffle(seq_names)     
         X_train = X_train[seq_names]
@@ -206,7 +208,7 @@ def main():
             y_batch = y_train[idx]
             mask_batch = mask_train[idx]
             loss, out, batch_norm = train(x_batch, y_batch, mask_batch)
-            print(batch_norm)
+#            print(batch_norm)
             norms.append(batch_norm)
             preds.append(out)
             losses.append(loss)
@@ -241,7 +243,7 @@ def main():
                 preds = []
                 num_batches = np.size(X,axis=0) // config.batch_size
                 for i in range(num_batches): ## +1 to get the "rest"
-                    print(i)
+#                    print(i)
                     idx = range(i*batch_size, (i+1)*batch_size)
                     x_batch = X[idx]
                     y_batch = y[idx]
@@ -252,9 +254,9 @@ def main():
                     losses.append(loss)
 #                    accuracy.append(acc)
                 predictions = np.concatenate(preds, axis = 0)
-                print "  pred"
-                print(predictions.shape)
-                print(predictions.dtype)
+#                print "  pred"
+#                print(predictions.shape)
+#                print(predictions.dtype)
                 loss_eval = np.mean(losses)
                 all_losses.append(loss_eval)
 

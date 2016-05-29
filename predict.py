@@ -14,7 +14,6 @@ if not (2 <= len(sys.argv) <= 3):
     sys.exit("Usage: python predict.py <metadata_path> [subset=test]")
 
 sym_y = T.imatrix('target_output')
-sym_mask = T.matrix('mask')
 sym_x = T.tensor3()
 
 metadata_path_all = glob.glob(sys.argv[1] + "*")
@@ -57,7 +56,7 @@ for metadata_path in metadata_path_all:
     print "Build eval function"
 
     inference = nn.layers.get_output(
-        l_out, sym_x, mask=sym_mask, deterministic=True)
+        l_out, sym_x, deterministic=True)
 
     print "Load parameters"
 
@@ -65,7 +64,7 @@ for metadata_path in metadata_path_all:
 
     print "Compile functions"
 
-    predict = theano.function([sym_x, sym_mask], inference)
+    predict = theano.function([sym_x], inference)
 
     print "Predict"
 
@@ -77,7 +76,7 @@ for metadata_path in metadata_path_all:
         idx = range(i*batch_size, (i+1)*batch_size)
         x_batch = X[idx]
         mask_batch = mask[idx]          
-        p = predict(x_batch, mask_batch)
+        p = predict(x_batch)
         predictions.append(p)
         
     predictions = np.concatenate(predictions, axis = 0)

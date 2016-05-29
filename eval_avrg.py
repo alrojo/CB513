@@ -57,10 +57,10 @@ for predictions_path in predictions_path_all:
     predictions = np.load(predictions_path)#.ravel()
     predictions = np.argmax(predictions, axis=2)
     for i in range(640):
-        for j in range(data.seqlen):
+        for j in range(700):
             num = predictions[i, j]
             john[i, j, num] = john[i, j, num] + 1
 
 acc = utils.proteins_acc(john, y, mask)
 
-print "Alternative accuracy (%s) is: %.5f" % (subset,acc) 
+print "Alternative accuracy (%s) is: %.5f" % (subset,acc)

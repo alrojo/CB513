@@ -83,7 +83,10 @@ def get_test():
 	c = np.hstack((a,b))
 	X_test = X_test[:,:,c]
 
-	# Setting X
+	# getting meta
+	seqlen = np.size(X_test,1)
+	d = np.size(X_test,2)
+	num_classes = 8
 	num_seq_test = np.size(X_test,0)
 	del a, b, c
 

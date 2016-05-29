@@ -82,8 +82,6 @@ for metadata_path in metadata_path_all:
     predictions = np.concatenate(predictions, axis = 0)
     predictions_path = os.path.join("predictions", os.path.basename(metadata_path).replace("dump_", "predictions_").replace(".pkl", ".npy"))
     
-    print(utils.proteins_acc(predictions, data.labels_test, data.mask_test))
-
     print "Storing predictions in %s" % predictions_path
     np.save(predictions_path, predictions)
     

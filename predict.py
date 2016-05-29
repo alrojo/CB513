@@ -75,7 +75,7 @@ for metadata_path in metadata_path_all:
     for i in range(num_batches):
         idx = range(i*batch_size, (i+1)*batch_size)
         x_batch = X[idx]
-        mask_batch = mask[idx]          
+        mask_batch = mask[idx]
         p = predict(x_batch)
         predictions.append(p)
         
@@ -84,24 +84,3 @@ for metadata_path in metadata_path_all:
     
     print "Storing predictions in %s" % predictions_path
     np.save(predictions_path, predictions)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

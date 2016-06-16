@@ -1,5 +1,5 @@
 # RNNProteins
-World record on cb513 dataset (68.9% on Q8 with best single performing model), available at:
+World record on cb513 dataset using cullpdb+profile\_6133\_filtered (68.9% on Q8 with best single performing model), available at:
 http://www.princeton.edu/~jzthree/datasets/ICML2014/
 
 By Alexander Rosenberg Johansen

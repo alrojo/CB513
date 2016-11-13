@@ -2,12 +2,10 @@ import lasagne
 import numpy as np
 import BatchNormLayer
 batch_norm = BatchNormLayer.batch_norm
-# 3 conv before FC, 400 LSTM
+np.random.seed(1)
 
-#validate_every = 40
 start_saving_at = 0
-save_every = 20
-#write_every_batch = 10
+save_every = 1
 
 epochs = 400
 batch_size = 64
